@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>
+      AimTest
+    </title>
+</head>
+
+<body id = "body" style = "text-align:center;">
+
+    <h1 style = "color:LightGrey;" > AimTest !</h1>
+
+    <canvas id="canvas" width="700" height="700" style="border:1px solid #000000;" ></canvas>
+    <p id="score" ><p>
+    <script>
+        var e = document.getElementById('canvas');
+        var elemLeft = e.offsetLeft;
+        var elemTop = e.offsetTop;
+        var context = e.getContext('2d');
+        var elements = [];
+        var elementClicked=[];
+        var time=10000;
+        var widht=50;
+        var round=0;
+        var score = 0;
+
+        let createCircle = ()=>{
+                for(i=0;i<5;i++){
+                  context.beginPath();
+                  let x=Math.floor(Math.random()*Math.floor(600))+50;
+                  let y=Math.floor(Math.random()*Math.floor(600))+50;
+                  context.arc(x, y,widht-widht*(1/4)*round, 0, 2 * Math.PI);
+                  context.stroke();
+                  elements.push({
+                     x: x,
+                     y: y,
+                     rayon:widht-widht*(1/4)*round,
+                     id:i,
+                  });
+                }
+        }
+
+
+
+
+
+// event listener for click event
+e.addEventListener('click', function(event) {
+   var xVal = event.pageX - elemLeft,
+   yVal = event.pageY - elemTop;
+   console.log(xVal, yVal);
+   //test if within circle
+   elements.forEach(function(ele){
+        var a=Math.pow((xVal-ele.x),2);
+        var b=Math.pow((yVal-ele.y),2);
+        var r2=Math.pow(ele.rayon,2);
+      if ((a+b)<r2) {
+        // alert('element clicked');
+         elementClicked.push(ele.id);
+         score+=1;
+         document.getElementById("score").innerHTML = "Voici votre score :"+score;
+         redraw();
+         document.getElementById("p1").innerHTML = "New text!";
+      }
+   });
+}, false);
+
+let restart=()=>{
+  elements = [];
+  elementClicked=[];
+  context.clearRect(0, 0,700,700);
+  createCircle();
+  start();
+}
+
+var time=10000;
+let start=()=>{
+  var timeGame = setTimeout(()=>{
+    if(elements.length!=elementClicked.length){
+      alert("Vous avez échoué le jeu va recommencer");
+      round=0;
+      time=10000;
+      score=0;
+       document.getElementById("score").innerHTML = "";
+    }else{
+      alert("Vous avez réussi manche suivante");
+      time-=1000;
+      round+=1;
+      if(time<1000)
+        alert("Vous n'avez plus rien a prouvez ici le jeu est concquis !");
+    }
+    alert("You have "+time/1000+"sec to finish, good luck !");
+    restart();
+  }, time);
+}
+
+
+
+
+let redraw=()=>{
+  context.clearRect(0, 0,700,700);
+  elements.forEach(function(ele){
+    let draw=0;
+    elementClicked.forEach(clicked => {
+      if(ele.id==clicked){
+        draw=1;
+      }
+    });
+    if(draw!=1){
+      context.beginPath();
+      context.arc(ele.x,ele.y, ele.rayon, 0, 2 * Math.PI);
+      context.stroke();
+    }
+  });
+}
+alert("You have "+time/1000+"sec to finish, good luck !");
+restart();
+
+
+</script>
+</body>
+
+</html>
